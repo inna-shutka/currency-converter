@@ -1,14 +1,12 @@
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { LogoIcon } from '../Icon';
 import styles from './Logo.module.css';
 
-export function Logo({ className }) {
-  const props = {
-    className,
-  };
+export function Logo( {className} ) {
   return (
-      <Link className={styles.logo} href='/' >
+      <Link className={clsx(styles.logo, className)} href='/' >
         <LogoIcon className={styles.logoIcon}/>
       </Link>
   );
@@ -16,4 +14,4 @@ export function Logo({ className }) {
 
 Logo.propTypes = {
   className: PropTypes.string,
-}
+};

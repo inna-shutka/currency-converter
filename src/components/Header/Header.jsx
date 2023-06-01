@@ -1,13 +1,11 @@
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Logo } from '../Logo';
 import styles from './Header.module.css';
 
-export function Header({ className}) {
-  const props = {
-    className,
-  };
+export function Header({ className }) {
   return (
-    <header className={styles.head}>
+    <header className={clsx(styles.head, className)}>
       <Logo/>
     </header>
   );
@@ -15,4 +13,4 @@ export function Header({ className}) {
 
 Header.propTypes = {
   className: PropTypes.string,
-}
+};

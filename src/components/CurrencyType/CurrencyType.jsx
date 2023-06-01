@@ -22,7 +22,6 @@ export function CurrencyType({
 
 CurrencyType.propTypes = {
   variant: PropTypes.oneOf(['btc', 'uah']),
-  icon: PropTypes.oneOf(ICON_TYPES),
+  icon: PropTypes.oneOf(Object.values(ICON_TYPES)),
   content: PropTypes.string,
-  className: PropTypes.string,
 };

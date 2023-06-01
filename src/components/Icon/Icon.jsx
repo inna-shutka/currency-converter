@@ -7,7 +7,7 @@ export const ICON_TYPES = {
     ukrFlag: 'ukrFlag',
 };
 
-export function Icon({ className, name, size, color }) {
+export function Icon({ className, size, color, name }) {
   const props = {
     className,
   };
@@ -67,17 +67,15 @@ export function Icon({ className, name, size, color }) {
 
 Icon.propTypes = {
   className: PropTypes.string,
-  name: PropTypes.oneOf(Object.values(ICON_TYPES)).isRequired,
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   color: PropTypes.string,
+  name: PropTypes.oneOf(Object.values(ICON_TYPES)).isRequired,
 };
 
-export function LogoIcon({ className }) {
-  const props = {
-    className,
-  };
+export function LogoIcon( {className} ) {
   return (
     <svg
+      className={className}
       viewBox="0 0 95 20" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"

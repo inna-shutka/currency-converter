@@ -15,9 +15,11 @@
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
     "next": "13.4.4",
+    "numeral": "^2.0.6",
     "prop-types": "^15.8.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-number-format": "^5.2.2"
   },
   "devDependencies": {
     "@storybook/addon-controls": "^7.0.18",

@@ -27,7 +27,7 @@ export function Button({
 Button.propTypes = {
   className: PropTypes.string,
   variant: PropTypes.oneOf(['primary', 'subtle']),
-  icon: PropTypes.oneOf(ICON_TYPES),
+  icon: PropTypes.oneOf(Object.values(ICON_TYPES)),
   onClick: PropTypes.func,
   isDisabled: PropTypes.bool,
 };
