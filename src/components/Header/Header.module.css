@@ -1,0 +1,14 @@
+.head {
+  width: 100%;
+  max-width: 1366px;
+  height: 88px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@media screen and (min-width: 768px) {
+  .head {
+    padding-left: 64px;
+  }
+}

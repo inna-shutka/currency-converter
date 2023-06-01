@@ -1,12 +1,14 @@
 import React from 'react';
 import { Icon, ICON_TYPES } from './Icon';
+import { IconGallery } from '@storybook/blocks';
 
 export default {
   title: 'components/Icon',
   component: Icon,
   argTypes: {
     name: {
-      control: { type: 'select', options: ICON_TYPES },
+      options: Object.values(ICON_TYPES),
+      control: { type: 'select' },
     },
     color: {
       control: { type: 'color' },
@@ -17,23 +19,16 @@ export default {
   },
 };
 
-// function Template(args) {
-//   return <Icon {...args} />;
-// }
+const Template = (args) => <Icon {...args} />;
 
-// export const Single = (args) => <Template {...args} />;
-// Single.args = {
-//   name: ICON_TYPES.refresh,
-//   color: '#000000',
-//   size: 24,
-// };
-
-export const Multiple = () => (
-  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-    {Object.values(ICON_TYPES).map((icon) => (
-      <div key={icon} style={{ margin: '10px' }}>
-        <Icon size={48} name={icon} />
-      </div>
-    ))}
-  </div>
-);
+export function Default() {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {Object.values(ICON_TYPES).map((icon) => (
+        <div key={icon} style={{ margin: '20px' }}>
+          <Icon size={24} name={icon} color='white' />
+        </div>
+      ))}
+    </div>
+  );
+}

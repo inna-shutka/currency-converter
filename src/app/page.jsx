@@ -1,4 +1,3 @@
-import { Icon } from '@/components/Icon';
 import styles from './page.module.css';
 
 export default function Home() {

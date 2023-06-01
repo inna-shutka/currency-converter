@@ -1,0 +1,79 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.3s ease;
+  }
+
+  .button:disabled {
+    cursor: not-allowed;
+  }
+
+  .icon {
+    transition: all 0.3s ease;
+  }
+
+  .icon-swap {
+    width: 24px;
+    height: 24px;
+    fill: #FFFFFF;
+  }
+
+  .icon-refresh {
+    width: 24px;
+    height: 24px;
+    fill: #FFFFFF;
+  }
+  
+  .variant-primary {
+    width: 40px;
+    height: 40px;
+    background-color: #476CFF;
+    border-radius: 8px;
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .variant-primary:hover {
+    background-color: #FFFFFF;
+  }
+
+  .variant-primary:hover > .icon-swap {
+    fill: #476CFF;
+  }
+
+  .variant-primary:active {
+    background-color: #323EFB;
+  }
+  
+  .variant-primary:active > .icon-swap {
+    fill: #FFFFFF;
+  }
+
+  .variant-primary:disabled {
+    background-color: #44526C;
+  }
+
+  .variant-primary:disabled > .icon-swap {
+    fill: #7C8698;
+  }
+
+  .variant-subtle {
+    background-color: transparent;
+    padding: 0px;
+  }
+
+  .variant-subtle:hover > .icon-refresh {
+    fill: #476CFF;
+  }
+
+  .variant-subtle:active > .icon-refresh {
+    fill: #323EFB;
+  }
+
+  .variant-subtle:disabled > .icon-refresh {
+    fill: #44526C;
+  }
