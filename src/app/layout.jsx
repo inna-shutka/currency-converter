@@ -1,4 +1,5 @@
 import './globals.css';
+import { Header } from '../components/Header';
 
 export const metadata = {
   title: '💱 Currency Converter',
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <div className='container'>
+          <Header />
           {children}
         </div>
       </body>

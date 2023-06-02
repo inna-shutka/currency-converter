@@ -1,0 +1,55 @@
+.rateCard {
+  max-width: 396px;
+  width: 100%;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #44526C;
+  padding: 24px 16px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 135%;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin-right: 4px;
+}
+
+.equals {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 135%;
+  color: #606C82;
+  margin-right: 4px;
+}
+
+.convert {
+  display: flex;
+  flex-grow: 1;
+}
+
+.loader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.button {
+  width: 24px;
+  height: 24px;
+}
+
+@media screen and (min-width: 768px) {
+  .rateCard {
+    max-width: 440px;
+    padding: 24px 32px;
+  }
+}

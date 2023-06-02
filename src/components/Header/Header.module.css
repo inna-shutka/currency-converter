@@ -4,11 +4,12 @@
   height: 88px;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  padding: 34px 16px;
 }
 
 @media screen and (min-width: 768px) {
   .head {
-    padding-left: 64px;
+    padding: 34px 64px;
   }
 }

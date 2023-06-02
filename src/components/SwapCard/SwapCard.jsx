@@ -17,7 +17,7 @@ export function SwapCard({
   onChange,
 }) {
   const inputRef = useRef(null);
-  const [setFocused] = useState(false);
+  const setFocused = useState(false);
 
   const handleCardClick = () => {
     inputRef.current.focus();

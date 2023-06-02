@@ -69,7 +69,7 @@ Icon.propTypes = {
   className: PropTypes.string,
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   color: PropTypes.string,
-  name: PropTypes.oneOf(Object.values(ICON_TYPES)).isRequired,
+  name: PropTypes.oneOf(Object.values(ICON_TYPES)),
 };
 
 export function LogoIcon( {className} ) {

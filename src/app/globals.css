@@ -66,10 +66,12 @@ body::after {
 }
 
 .container {
-  min-height: 100vh;
-  max-width: 1366px;
   width: 100%;
-  margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
