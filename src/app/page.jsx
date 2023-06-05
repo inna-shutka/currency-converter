@@ -1,14 +1,11 @@
-import { getCurrencyRate } from '../api/getCurrencyRate';
-import { Loader } from '../components/Loader';
 import { Converter } from '../components/Converter';
 import styles from './page.module.css';
 
-export default async function Home() {
-  const price = await getCurrencyRate();
-
+export default function Home() {
+  
   return (
     <div className={styles.container}>
-      <Converter price={price} />
+      <Converter />
     </div>
   )
 }

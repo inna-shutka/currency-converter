@@ -12,6 +12,7 @@ export const Input = forwardRef(
       disabled,
       placeholder,
       type,
+      inputMode,
       onBlur,
       onEnterPress,
     },
@@ -30,6 +31,7 @@ export const Input = forwardRef(
         disabled={disabled}
         placeholder={placeholder}
         type={type}
+        inputMode={inputMode}
         onBlur={onBlur}
         onKeyUp={onKeyUp}
         ref={ref}
@@ -40,16 +42,18 @@ export const Input = forwardRef(
 
 Input.propTypes = {
   className: PropTypes.string,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
   disabled: PropTypes.bool,
   placeholder: PropTypes.string,
   type: PropTypes.string,
+  inputMode: PropTypes.string,
   onBlur: PropTypes.func,
   onEnterPress: PropTypes.func,
 };
 
 Input.defaultProps = {
   placeholder: '0.00',
-  type: 'text',
+  type: 'number',
+  inputMode: 'decimal',
 };

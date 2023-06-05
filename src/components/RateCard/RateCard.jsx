@@ -42,7 +42,7 @@ RateCard.propTypes = {
   loader: PropTypes.bool,
   amount: PropTypes.number,
   base: PropTypes.string,
-  rate: PropTypes.string,
+  rate: PropTypes.number,
   convertTo: PropTypes.string,
   onClick: PropTypes.func,
 };

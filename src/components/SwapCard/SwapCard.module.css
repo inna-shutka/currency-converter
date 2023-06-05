@@ -1,5 +1,5 @@
 .swapCard {
-  max-width: 396px;
+  max-width: 440px;
   width: 100%;
   height: 120px;
   background-color: #10161D;
@@ -10,9 +10,8 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
-  flex-wrap: wrap;
   transition: all 0.3s ease;
 }
 
@@ -53,9 +52,29 @@
   align-items: center;
 }
 
+.bodyName {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 135%;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
 @media screen and (min-width: 768px) {
   .swapCard {
-    max-width: 440px;
     padding: 16px 32px;
   }
 }
