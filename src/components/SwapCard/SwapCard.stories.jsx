@@ -8,18 +8,15 @@ export default {
 
 const Template = (args) => <SwapCard {...args} />;
 
+
 export const BTC = Template.bind({});
 BTC.args = {
-  variant: 'btc',
-  icon: 'bitcoin',
-  isBuy: false,
-  loader: false,
+  icon: 'BTC',
+  base: 'BTC',
 };
 
 export const UAH = Template.bind({});
 UAH.args = {
-  variant: 'uah',
-  icon: 'ukrFlag',
-  isBuy: true,
-  loader: true,
+  icon: 'UAH',
+  base: 'UAH',
 };
