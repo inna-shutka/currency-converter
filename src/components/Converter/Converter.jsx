@@ -75,9 +75,9 @@ export const Converter = () => {
       return;
     }
     if (base === 'BTC' && convertTo === 'UAH') {
-      setConvertToAmount(convertedAmount * parseFloat(rate));
+      setConvertToAmount((convertedAmount * parseFloat(rate)).toFixed(2));
     } else if (base === 'UAH' && convertTo === 'BTC') {
-      setConvertToAmount(convertedAmount / parseFloat(rate));
+      setConvertToAmount((convertedAmount / parseFloat(rate)).toFixed(8));
     }
   };
 
@@ -88,25 +88,43 @@ export const Converter = () => {
       return;
     }
     if (convertTo === 'BTC' && base === 'UAH') {
-      setBaseAmount(convertedAmount / parseFloat(rate));
+      setBaseAmount((convertedAmount / parseFloat(rate)).toFixed(8));
     } else if (convertTo === 'UAH' && base === 'BTC') {
-      setBaseAmount(convertedAmount * parseFloat(rate));
+      setBaseAmount((convertedAmount * parseFloat(rate)).toFixed(2));
     }
-  };
+  };  
   
   const handleSwap = async () => {
     swapCalledRef.current = true;
   
     const tempBase = base;
     const tempConvertTo = convertTo;
+  
     setBase(tempConvertTo);
     setConvertTo(tempBase);
   
     const tempBaseAmount = baseAmount;
     const tempConvertToAmount = convertToAmount;
   
-    setBaseAmount(tempConvertToAmount);
-    setConvertToAmount(tempBaseAmount);
+    if (tempBaseAmount) {
+      if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
+        const convertedAmount = parseFloat(tempBaseAmount) * parseFloat(rate); // Swap calculation
+        setConvertToAmount(convertedAmount.toFixed(2));
+      } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
+        const convertedAmount = parseFloat(tempBaseAmount) / parseFloat(rate); // Swap calculation
+        setConvertToAmount(convertedAmount.toFixed(8));
+      }
+    }
+  
+    if (tempConvertToAmount) {
+      if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
+        const convertedAmount = parseFloat(tempConvertToAmount) / parseFloat(rate); // Swap calculation
+        setBaseAmount(convertedAmount.toFixed(8));
+      } else if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
+        const convertedAmount = parseFloat(tempConvertToAmount) * parseFloat(rate); // Swap calculation
+        setBaseAmount(convertedAmount.toFixed(2));
+      }
+    }
   
     startLoading();
   
@@ -159,8 +177,10 @@ export const Converter = () => {
     };
   
     await updateRate();
-  };
-  
+
+    calculate();
+  };  
+
   const handleBaseInput = (value) => {
     setBaseAmount(value);
     startLoading();
