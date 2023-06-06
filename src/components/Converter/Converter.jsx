@@ -68,6 +68,16 @@ export const Converter = () => {
     swapCalledRef.current = false;
   }, [convertTo, rate, baseAmount]);
 
+  useEffect(() => {
+    startLoading();
+    handleRefresh()
+      .then(stopLoading)
+      .catch((error) => {
+        console.error('Something went wrong', error);
+        stopLoading();
+      });
+  }, [convertTo, base, rate]);
+
   const calculate = () => {
     const convertedAmount = parseFloat(baseAmount);
     if (isNaN(convertedAmount)) {
@@ -88,12 +98,14 @@ export const Converter = () => {
       return;
     }
     if (convertTo === 'BTC' && base === 'UAH') {
-      setBaseAmount((convertedAmount / parseFloat(rate)).toFixed(8));
+      const calculatedAmount = (convertedAmount / parseFloat(rate)).toFixed(8);
+      setBaseAmount(calculatedAmount);
     } else if (convertTo === 'UAH' && base === 'BTC') {
-      setBaseAmount((convertedAmount * parseFloat(rate)).toFixed(2));
+      const calculatedAmount = (convertedAmount * parseFloat(rate)).toFixed(2);
+      setBaseAmount(calculatedAmount);
     }
   };  
-  
+
   const handleSwap = async () => {
     swapCalledRef.current = true;
   
@@ -108,77 +120,52 @@ export const Converter = () => {
   
     if (tempBaseAmount) {
       if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
-        const convertedAmount = parseFloat(tempBaseAmount) * parseFloat(rate); // Swap calculation
+        const convertedAmount = parseFloat(tempBaseAmount) * parseFloat(rate);
         setConvertToAmount(convertedAmount.toFixed(2));
       } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
-        const convertedAmount = parseFloat(tempBaseAmount) / parseFloat(rate); // Swap calculation
+        const convertedAmount = parseFloat(tempBaseAmount) / parseFloat(rate);
         setConvertToAmount(convertedAmount.toFixed(8));
       }
     }
   
     if (tempConvertToAmount) {
       if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
-        const convertedAmount = parseFloat(tempConvertToAmount) / parseFloat(rate); // Swap calculation
+        const convertedAmount = parseFloat(tempConvertToAmount) / parseFloat(rate);
         setBaseAmount(convertedAmount.toFixed(8));
       } else if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
-        const convertedAmount = parseFloat(tempConvertToAmount) * parseFloat(rate); // Swap calculation
+        const convertedAmount = parseFloat(tempConvertToAmount) * parseFloat(rate);
         setBaseAmount(convertedAmount.toFixed(2));
       }
     }
   
     startLoading();
   
-    const fetchNewRate = async () => {
-      try {
-        const response = await fetch(API);
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
-        }
+    try {
+      const newPrice = await fetcher();
+      let newRate;
   
-        const data = await response.json();
-        const newRate = data.bitcoin?.uah;
-  
-        if (newRate === undefined) {
-          throw new Error('Failed to parse response data');
-        }
-  
-        return newRate;
-      } catch (error) {
-        console.error('Something went wrong', error);
-        throw error;
+      if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
+        newRate = newPrice;
+      } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
+        newRate = 1 / newPrice;
       }
-    };
   
-    const updateRate = async () => {
-      try {
-        const newRate = await fetchNewRate();
+      setRate(newRate);
+  
+      setTimeout(() => {
+        stopLoading();
+        setIsBuy(!isBuy);
   
         if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
-          setRate(newRate);
+          calculate();
         } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
-          setRate(1 / newRate);
+          calculateReverse();
         }
-  
-        setTimeout(async () => {
-          stopLoading();
-          setIsBuy(!isBuy);
-  
-          if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
-            await handleRefresh();
-          } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
-            await calculateReverse();
-          }
-        }, 1000);
-      } catch (error) {
-        console.error('Something went wrong', error);
-      } finally {
-        stopLoading();
-      }
-    };
-  
-    await updateRate();
-
-    calculate();
+      }, 1000);
+    } catch (error) {
+      console.error('Something went wrong', error);
+      stopLoading();
+    }
   };  
 
   const handleBaseInput = (value) => {

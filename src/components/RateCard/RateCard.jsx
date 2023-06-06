@@ -1,3 +1,5 @@
+import React from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Button } from '../Button';
@@ -15,7 +17,11 @@ export const RateCard = ({
   onClick,
 }) => {
   const rateFormat = rate >= 1 ? '0,0.00' : '0,0.00000000';
-  const formattedRate = numeral(rate).format(rateFormat);
+  const [formattedRate, setFormattedRate] = useState(numeral(rate).format(rateFormat));
+
+  useEffect(() => {
+    setFormattedRate(numeral(rate).format(rateFormat));
+  }, [rate]);
 
   return (
     <div className={clsx(styles.rateCard, className)}>
