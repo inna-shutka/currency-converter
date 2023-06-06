@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import numeral from 'numeral';
 import { SwapCard } from '../SwapCard';
 import { Button } from '../Button';
 import { RateCard } from '../RateCard';
@@ -9,54 +8,51 @@ import useSWR from 'swr';
 
 const API = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=uah';
 
-export const Converter = () => {
-  const fetcher = async () => {
-    const response = await fetch(API);
+const useLoading = (initialState = false) => {
+  const [loading, setLoading] = useState(initialState);
 
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const bitcoinPrice = data.bitcoin?.uah;
-
-    if (bitcoinPrice === undefined) {
-      throw new Error('Failed to parse response data');
-    }
-
-    return bitcoinPrice;
+  const startLoading = () => {
+    setLoading(true);
   };
 
-  const { data: price, error } = useSWR('currencyRate', fetcher, {
-    revalidateOnMount: true,
-    revalidateOnFocus: false,
-  });
+  const stopLoading = () => {
+    setLoading(false);
+  };
 
+  return [loading, startLoading, stopLoading];
+};
+
+const fetcher = async () => {
+  const response = await fetch(API);
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const bitcoinPrice = data.bitcoin?.uah;
+
+  if (bitcoinPrice === undefined) {
+    throw new Error('Failed to parse response data');
+  }
+
+  return bitcoinPrice;
+};
+
+export const Converter = () => {
+  const [loading, startLoading, stopLoading] = useLoading(false);
   const [base, setBase] = useState('BTC');
   const [baseAmount, setBaseAmount] = useState('');
   const [convertTo, setConvertTo] = useState('UAH');
   const [convertToAmount, setConvertToAmount] = useState('');
   const swapCalledRef = useRef(false);
-  const [rate, setRate] = useState(null);
+  const [rate, setRate] = useState(1);
   const [isBuy, setIsBuy] = useState(true);
 
-  const useLoading = (initialState = false) => {
-    const [loading, setLoading] = useState(initialState);
-  
-    const startLoading = () => {
-      setLoading(true);
-    };
-  
-    const stopLoading = () => {
-      setLoading(false);
-    };
-  
-    return [loading, startLoading, stopLoading];
-  };
-
-  const [baseLoading, startBaseLoading, stopBaseLoading] = useLoading(false);
-  const [convertToLoading, startConvertToLoading, stopConvertToLoading] = useLoading(false);
-  const [rateLoading, startRateLoading, stopRateLoading] = useLoading(false);
+  const { data: price, error } = useSWR('currencyRate', fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: false,
+  });
 
   useEffect(() => {
     if (price) {
@@ -70,14 +66,7 @@ export const Converter = () => {
       calculate();
     }
     swapCalledRef.current = false;
-  }, [baseAmount, convertTo, rate]);
-
-  useEffect(() => {
-    if (!swapCalledRef.current && rate !== null) {
-      calculateReverse();
-    }
-    swapCalledRef.current = false;
-  }, [convertToAmount, convertTo, rate]);
+  }, [convertTo, rate, baseAmount]);
 
   const calculate = () => {
     const convertedAmount = parseFloat(baseAmount);
@@ -91,17 +80,16 @@ export const Converter = () => {
       setConvertToAmount(convertedAmount / parseFloat(rate));
     }
   };
-  
+
   const calculateReverse = () => {
     const convertedAmount = parseFloat(convertToAmount);
     if (isNaN(convertedAmount)) {
       setBaseAmount('');
       return;
     }
-  
-    if (base === 'BTC' && convertTo === 'UAH') {
+    if (convertTo === 'BTC' && base === 'UAH') {
       setBaseAmount(convertedAmount / parseFloat(rate));
-    } else if (base === 'UAH' && convertTo === 'BTC') {
+    } else if (convertTo === 'UAH' && base === 'BTC') {
       setBaseAmount(convertedAmount * parseFloat(rate));
     }
   };
@@ -120,7 +108,7 @@ export const Converter = () => {
     setBaseAmount(tempConvertToAmount);
     setConvertToAmount(tempBaseAmount);
   
-    startRateLoading();
+    startLoading();
   
     const fetchNewRate = async () => {
       try {
@@ -153,63 +141,62 @@ export const Converter = () => {
           setRate(1 / newRate);
         }
   
-        setTimeout(() => {
-          stopRateLoading();
+        setTimeout(async () => {
+          stopLoading();
           setIsBuy(!isBuy);
   
           if (tempBase === 'BTC' && tempConvertTo === 'UAH') {
-            calculate();
+            await handleRefresh();
           } else if (tempBase === 'UAH' && tempConvertTo === 'BTC') {
-            calculateReverse();
+            await calculateReverse();
           }
         }, 1000);
       } catch (error) {
         console.error('Something went wrong', error);
       } finally {
-        stopRateLoading();
+        stopLoading();
       }
     };
   
     await updateRate();
   };
-
+  
   const handleBaseInput = (value) => {
     setBaseAmount(value);
-    startConvertToLoading();
+    startLoading();
     setTimeout(() => {
-      stopConvertToLoading();
+      stopLoading();
     }, 1000);
   };
 
   const handleConvertToInput = (value) => {
     setConvertToAmount(value);
-    startBaseLoading();
+    startLoading();
     setTimeout(() => {
-      stopBaseLoading(false);
+      stopLoading(false);
     }, 1000);
   };
 
   const handleRefresh = useCallback(async () => {
-    startRateLoading();
+    startLoading();
     try {
       const newPrice = await fetcher();
       let newRate;
-  
+
       if (base === 'BTC' && convertTo === 'UAH') {
         newRate = newPrice;
       } else if (base === 'UAH' && convertTo === 'BTC') {
         newRate = 1 / newPrice;
       }
-  
+
       setRate(newRate);
+      calculate();
     } catch (error) {
       console.error('Something went wrong', error);
     } finally {
-      stopRateLoading();
+      stopLoading();
     }
-  }, [base, convertTo, fetcher]);
-
-  const rateFormat = rate >= 1 ? '0,0.00' : '0,0.00000000';
+  }, [startLoading, base, convertTo]);
 
   return (
     <div className={styles.container}>
@@ -219,7 +206,7 @@ export const Converter = () => {
         value={baseAmount}
         onChange={handleBaseInput}
         base={base}
-        loader={baseLoading}
+        loader={loading}
         isBuy={isBuy}
       />
       <SwapCard
@@ -228,7 +215,7 @@ export const Converter = () => {
         className={clsx(styles.swapCard, styles.animation)}
         value={convertToAmount}
         onChange={handleConvertToInput}
-        loader={convertToLoading}
+        loader={loading}
         isBuy={!isBuy}
       />
       <Button
@@ -239,11 +226,11 @@ export const Converter = () => {
       />
       <RateCard
         className={clsx(styles.rateCard, styles.animation)}
-        rate={numeral(rate).format(rateFormat)}
+        rate={parseFloat(rate)}
         amount={1}
         base={base}
         convertTo={convertTo}
-        loader={rateLoading}
+        loader={loading}
         onClick={handleRefresh}
       />
     </div>

@@ -1,7 +1,8 @@
-import clsx from'clsx';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
+import numeral from 'numeral';
 import styles from './RateCard.module.css';
 
 export const RateCard = ({
@@ -13,6 +14,9 @@ export const RateCard = ({
   convertTo,
   onClick,
 }) => {
+  const rateFormat = rate >= 1 ? '0,0.00' : '0,0.00000000';
+  const formattedRate = numeral(rate).format(rateFormat);
+
   return (
     <div className={clsx(styles.rateCard, className)}>
       {!loader ? (
@@ -21,7 +25,7 @@ export const RateCard = ({
             {amount} {base}
           </span>
           <span className={styles.equals}>=</span>
-          <span className={clsx(styles.text, styles.rate)}>{rate}</span>
+          <span className={clsx(styles.text, styles.rate)}>{formattedRate}</span>
           <span className={clsx(styles.text, styles.convert)}>{convertTo}</span>
         </>
       ) : (
@@ -29,8 +33,8 @@ export const RateCard = ({
       )}
       <Button
         className={styles.button}
-        variant='subtle'
-        icon='refresh'
+        variant="subtle"
+        icon="refresh"
         onClick={onClick}
       />
     </div>
