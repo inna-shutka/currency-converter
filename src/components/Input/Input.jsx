@@ -52,6 +52,8 @@ Input.propTypes = {
   onEnterPress: PropTypes.func,
 };
 
+Input.displayName = 'Input'
+
 Input.defaultProps = {
   placeholder: '0.00',
   type: 'number',
