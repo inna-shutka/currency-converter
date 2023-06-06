@@ -1,6 +1,7 @@
-/** @type { import('@storybook/nextjs').StorybookConfig } */
+const path = require("path");
+
 const config = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+  stories: ["../src/components/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
@@ -8,10 +9,15 @@ const config = {
   ],
   framework: {
     name: "@storybook/nextjs",
-    options: {},
+    options: {}
   },
   docs: {
     autodocs: "tag",
   },
+  webpackFinal: async (config) => {
+    config.resolve.modules.push(path.resolve(__dirname, "../components"));
+    return config;
+  },
 };
+
 export default config;
