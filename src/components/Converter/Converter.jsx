@@ -54,30 +54,6 @@ export const Converter = () => {
     revalidateOnFocus: false,
   });
 
-  useEffect(() => {
-    if (price) {
-      setRate(price);
-    }
-    handleRefresh();
-  }, [price]);
-
-  useEffect(() => {
-    if (!swapCalledRef.current && rate !== null) {
-      calculate();
-    }
-    swapCalledRef.current = false;
-  }, [convertTo, rate, baseAmount]);
-
-  useEffect(() => {
-    startLoading();
-    handleRefresh()
-      .then(stopLoading)
-      .catch((error) => {
-        console.error('Something went wrong', error);
-        stopLoading();
-      });
-  }, [convertTo, base, rate]);
-
   const calculate = () => {
     const convertedAmount = parseFloat(baseAmount);
     if (isNaN(convertedAmount)) {
@@ -104,7 +80,52 @@ export const Converter = () => {
       const calculatedAmount = (convertedAmount * parseFloat(rate)).toFixed(2);
       setBaseAmount(calculatedAmount);
     }
-  };  
+  };
+
+  const handleRefresh = useCallback(async () => {
+    startLoading();
+    try {
+      const newPrice = await fetcher();
+      let newRate;
+
+      if (base === 'BTC' && convertTo === 'UAH') {
+        newRate = newPrice;
+      } else if (base === 'UAH' && convertTo === 'BTC') {
+        newRate = 1 / newPrice;
+      }
+
+      setRate(newRate);
+      calculate();
+    } catch (error) {
+      console.error('Something went wrong', error);
+    } finally {
+      stopLoading();
+    }
+  }, [startLoading, base, convertTo, calculate]);
+
+  useEffect(() => {
+    if (price) {
+      setRate(price);
+    }
+    handleRefresh();
+  }, [price, handleRefresh]);
+
+  useEffect(() => {
+    if (!swapCalledRef.current && rate !== null) {
+      calculate();
+    }
+    swapCalledRef.current = false;
+  }, [convertTo, rate, baseAmount, calculate]);
+
+  useEffect(() => {
+    startLoading();
+    handleRefresh()
+      .then(stopLoading)
+      .catch((error) => {
+        console.error('Something went wrong', error);
+        stopLoading();
+      });
+  }, [convertTo, base, rate, handleRefresh, startLoading, stopLoading]);
 
   const handleSwap = async () => {
     swapCalledRef.current = true;
@@ -183,27 +204,6 @@ export const Converter = () => {
       stopLoading(false);
     }, 1000);
   };
-
-  const handleRefresh = useCallback(async () => {
-    startLoading();
-    try {
-      const newPrice = await fetcher();
-      let newRate;
-
-      if (base === 'BTC' && convertTo === 'UAH') {
-        newRate = newPrice;
-      } else if (base === 'UAH' && convertTo === 'BTC') {
-        newRate = 1 / newPrice;
-      }
-
-      setRate(newRate);
-      calculate();
-    } catch (error) {
-      console.error('Something went wrong', error);
-    } finally {
-      stopLoading();
-    }
-  }, [startLoading, base, convertTo]);
 
   return (
     <div className={styles.container}>

@@ -21,7 +21,7 @@ export const RateCard = ({
 
   useEffect(() => {
     setFormattedRate(numeral(rate).format(rateFormat));
-  }, [rate]);
+  }, [rate, rateFormat]);
 
   return (
     <div className={clsx(styles.rateCard, className)}>
