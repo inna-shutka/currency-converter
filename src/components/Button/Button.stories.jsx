@@ -1,11 +1,16 @@
 import React from 'react';
 import { ICON_TYPES } from '../Icon';
 import { Button } from './Button';
+import '../../app/globals.css';
 
 export default {
   title: 'components/Button',
   component: Button,
   argTypes: {
+    variant: {
+      options: ['primary', 'subtle'],
+      control: { type: "radio" },
+    },
     icon: {
       options: Object.values(ICON_TYPES),
       control: { type: 'select' },
