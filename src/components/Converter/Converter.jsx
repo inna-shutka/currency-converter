@@ -29,30 +29,30 @@ export const Converter = () => {
   const [convertToAmount, setConvertToAmount] = useState('');
   const [swapClicked, setSwapClicked] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const randomWait = () =>
     new Promise((res) => setTimeout(res, Math.random() * 1000));
-
-  const loadData = async () => {
-    setIsLoaded(true);
-    try {
-      await randomWait();
-      const fetchedRate = await fetchRate();
-      setRate(fetchedRate);
-    } catch (error) {
+    
+    const loadData = useCallback(async () => {
+      setIsLoaded(true);
+      try {
+        await randomWait();
+        const fetchedRate = await fetchRate();
+        setRate(fetchedRate);
+      } catch (error) {
         console.error('Error', error);
-    } finally {
+      } finally {
         setIsLoaded(false);
-    }
-  };
+      }
+    }, []);
+  
+    useEffect(() => {
+      loadData();
+    }, [loadData]);
 
   const handleRefresh = useCallback(async (event) => {
     event.preventDefault();
     await loadData();
-  }, []);
+  }, [loadData]);
 
   const handleSwap = useCallback((event) => {
     event.preventDefault();

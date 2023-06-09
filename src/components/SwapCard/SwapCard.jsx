@@ -78,6 +78,8 @@ export const SwapCard = forwardRef(({
   }
 )
 
+SwapCard.displayName = 'SwapCard'
+
 SwapCard.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
