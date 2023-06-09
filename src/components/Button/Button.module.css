@@ -13,18 +13,16 @@
   }
 
   .icon {
+    width: 24px;
+    height: 24px;
     transition: all 0.3s ease;
   }
 
   .icon-swap {
-    width: 24px;
-    height: 24px;
     fill: #FFFFFF;
   }
 
   .icon-refresh {
-    width: 24px;
-    height: 24px;
     fill: #FFFFFF;
   }
   

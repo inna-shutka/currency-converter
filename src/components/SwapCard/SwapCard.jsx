@@ -1,69 +1,90 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { forwardRef, useState, useRef, useEffect } from 'react';
 import { Icon } from '../Icon/Icon';
 import { Input } from '../Input/Input';
 import { Loader } from '../Loader/Loader';
 import styles from './SwapCard.module.css';
 
-export function SwapCard({
+export const SwapCard = forwardRef(({
   className,
-  isBuy,
+  label,
   icon,
   base,
   convertTo,
-  loader,
+  isLoaded,
   value,
   onChange,
-}) {
-  const inputRef = useRef(null);
-  const [focused, setFocused] = useState(false);
+  }, ref) => {
 
-  const handleCardClick = () => {
-    inputRef.current.focus();
-    setFocused(true);
-  };
+    const [isActive, setIsActive] = useState(false);
 
-  const handleInputBlur = () => {
-    setFocused(false);
-  };
+    const handleClickContainer = () => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+        setIsActive(true);
+    };
+
+    const handleContainerFocus = () => {
+      setIsActive(true);
+    };
+    
+    const handleContainerBlur = () => {
+      setIsActive(false);
+    };
+    
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.value = value;
+      }
+    }, [value]);
+
+    // const formattedValue = value ? numeral(value).format(value < 0.0001 ? '0.000000' : '0.00') : '';
+
 
   return (
     <div
-      className={clsx(styles.swapCard, className, { [styles.focused]: focused })}
-      onClick={handleCardClick}
+      className={clsx(styles.swapCard, className, { [styles.active]: isActive })}
+      onClick={handleClickContainer}
+      onFocus={handleContainerFocus}
+      onBlur={handleContainerBlur}
+      ref={ref}
     >
       <div className={styles.heading}>
-        <span className={styles.text}>{isBuy ? 'You buy' : 'You sell'}</span>
+        <span className={styles.text}>{label}</span>
       </div>
       <div className={styles.body}>
         <div className={styles.bodyName}>
           <Icon name={icon} className={styles.icon} />
           <span className={styles.value}>{base ?? convertTo}</span>
         </div>
-        {loader ? (
-          <Loader />
+        {isLoaded ? (
+          <Loader className={styles.loader} />
         ) : (
           <Input
-            ref={inputRef}
             className={styles.input}
+            placeholder='0.00'
             value={value}
             onChange={onChange}
-            onBlur={handleInputBlur}
+            ref={inputRef}
           />
         )}
       </div>
     </div>
   );
-}
+  }
+)
 
 SwapCard.propTypes = {
   className: PropTypes.string,
-  isBuy: PropTypes.bool,
+  label: PropTypes.string,
   icon: PropTypes.string,
   base: PropTypes.string,
   convertTo: PropTypes.string,
-  loader: PropTypes.bool,
+  isLoaded: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
 };

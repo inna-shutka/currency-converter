@@ -1,47 +1,40 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
-import numeral from 'numeral';
 import styles from './RateCard.module.css';
 
 export const RateCard = ({
   className,
-  loader,
+  isLoaded,
   amount,
   base,
-  rate,
   convertTo,
+  rate,
   onClick,
 }) => {
-  const rateFormat = rate >= 1 ? '0,0.00' : '0,0.00000000';
-  const [formattedRate, setFormattedRate] = useState(numeral(rate).format(rateFormat));
-
-  useEffect(() => {
-    setFormattedRate(numeral(rate).format(rateFormat));
-  }, [rate, rateFormat]);
 
   return (
     <div className={clsx(styles.rateCard, className)}>
-      {!loader ? (
+      {isLoaded ? (
+        <Loader className={styles.loader} />
+      ) : (
         <>
           <span className={styles.text}>
             {amount} {base}
           </span>
           <span className={styles.equals}>=</span>
-          <span className={clsx(styles.text, styles.rate)}>{formattedRate}</span>
+          <span className={clsx(styles.text, styles.rate)}>{rate}</span>
           <span className={clsx(styles.text, styles.convert)}>{convertTo}</span>
         </>
-      ) : (
-        <Loader className={styles.loader} />
       )}
       <Button
         className={styles.button}
-        variant="subtle"
-        icon="refresh"
+        variant='subtle'
+        icon='refresh'
         onClick={onClick}
+        disabled={isLoaded}
       />
     </div>
   );
@@ -49,10 +42,10 @@ export const RateCard = ({
 
 RateCard.propTypes = {
   className: PropTypes.string,
-  loader: PropTypes.bool,
+  isLoaded: PropTypes.bool,
   amount: PropTypes.number,
   base: PropTypes.string,
-  rate: PropTypes.number,
   convertTo: PropTypes.string,
+  rate: PropTypes.string,
   onClick: PropTypes.func,
 };

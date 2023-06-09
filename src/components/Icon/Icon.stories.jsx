@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon, ICON_TYPES } from './Icon';
-import { IconGallery } from '@storybook/blocks';
 
 export default {
   title: 'components/Icon',

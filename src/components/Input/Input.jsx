@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import styles from './Input.module.css';
 import { forwardRef } from 'react';
+import styles from './Input.module.css';
 
 export const Input = forwardRef(
   (
@@ -13,27 +13,34 @@ export const Input = forwardRef(
       placeholder,
       type,
       inputMode,
-      onBlur,
-      onEnterPress,
+      maxLength,
     },
     ref
   ) => {
-    const onKeyUp = (e) => {
-      if (e.keyCode === 13 && onEnterPress) {
-        onEnterPress();
-      }
-    };
+    
+    const handleChange = (event) => {
+      const rawValue = event.target.value;
+      const cleanedValue = rawValue.replace(/[^0-9.,]/g, '');
+
+      const dotCount = cleanedValue.split('.').length - 1;
+      const commaCount = cleanedValue.split(',').length - 1;
+
+      let formattedValue = cleanedValue.replace(/\.+/g, dotCount > 1 ? '' : '.');
+      formattedValue = formattedValue.replace(/,+/g, commaCount > 0 ? '' : '.');
+
+      onChange(formattedValue);
+  };
+
     return (
       <input
         className={clsx(className, styles.input)}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         disabled={disabled}
         placeholder={placeholder}
         type={type}
         inputMode={inputMode}
-        onBlur={onBlur}
-        onKeyUp={onKeyUp}
+        maxLength={maxLength}
         ref={ref}
       />
     );
@@ -48,8 +55,7 @@ Input.propTypes = {
   placeholder: PropTypes.string,
   type: PropTypes.string,
   inputMode: PropTypes.string,
-  onBlur: PropTypes.func,
-  onEnterPress: PropTypes.func,
+  maxLength: PropTypes.string,
 };
 
 Input.displayName = 'Input'
@@ -58,4 +64,5 @@ Input.defaultProps = {
   placeholder: '0.00',
   type: 'number',
   inputMode: 'decimal',
+  maxLength: '12',
 };
